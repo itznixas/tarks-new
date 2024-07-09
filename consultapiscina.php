@@ -24,15 +24,7 @@ $conexion->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<script>
-        document.addEventListener('DOMContentLoaded', function() {
-            <?php if ($data): ?>
-                const fecha = "<?php echo $element['fecha']; ?>";
-                const date = new Date(fecha).toLocaleString();
-                console.log(date);
-            <?php endif; ?>
-        });
-    </script>
+
 <body>
     <div class="container">
         <h1>Muestra de piscina</h1>
