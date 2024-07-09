@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('consultapiscina.php') // Asegúrate que el nombre del archivo es correcto
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.length > 0 && !data.error) {
+                        const element = data[0]; // Supone que solo necesitas el primer registro
+                        document.getElementById('idpiscina').textContent = element.idpiscina;
+                        document.getElementById('temperatura').textContent = element.temp;
+                        document.getElementById('salinas').textContent = element.salina;
+                        document.getElementById('hora').textContent = element.fecha;
+                        document.getElementById('nombreChip').textContent = element.chip_name;
+                    } else {
+                        console.error(data.error || 'No data available');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+    <div class="container">
+        <h1>Muestra de piscina</h1>
+        <p><strong>Id: </strong><span id="idpiscina"></span></p>
+        <p><strong>Temperatura: </strong><span id="temperatura"></span></p>
+        <p><strong>Salinas: </strong><span id="salinas"></span></p>
+        <p><strong>Hora y fecha: </strong><span id="hora"></span></p>
+        <p><strong>Nombre del chip: </strong><span id="nombreChip"></span></p>    
+    </div>
+</body>
+</html>
