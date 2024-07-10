@@ -8,19 +8,42 @@
 <body>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('consultapiscina.php')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.length > 0) {
-                        const element = data[0]; // Supone que solo necesitas el primer registro
-                        document.getElementById('idpiscina').textContent = element.idpiscina;
-                        document.getElementById('temperatura').textContent = element.temp;
-                        document.getElementById('salinas').textContent = element.salina;
-                        document.getElementById('hora').textContent = element.fecha;
-                        document.getElementById('nombreChip').textContent = element.chip_name;
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+            // Obtiene los datos viejos para verificar con los nuevos
+            let lastData = "";
+
+            function fetchData() {
+                fetch('consultapiscina.php')
+                    .then(response => response.text())
+                    .then(data => {
+                        const rows = data.split("\n");
+                        if (rows.length > 1) {
+                            const element = rows[1].split(",");
+                            //Obtiene los datos nuevos 
+                            const newData = element.join(",");
+
+                            // Cada 30 segundos se va actualizandos por datos nuevos
+                            if (newData !== lastData) {
+                                
+                                //Obtiene la fecha unix, para tranformalo hora local
+                                const date = new Date(element[3] * 1000).toLocaleString();
+
+                                document.getElementById('idpiscina').textContent = element[0];
+                                document.getElementById('temperatura').textContent = element[1];
+                                document.getElementById('salinas').textContent = element[2];
+                                document.getElementById('hora').textContent = date;
+                                document.getElementById('nombreChip').textContent = element[4];
+                                lastData = newData;
+                            }
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+
+            
+            fetchData();
+
+            // Obtiene la funcion y actualiza cada 30 segundos
+            setInterval(fetchData, 5000);
         });
     </script>
     <div class="container">
@@ -29,7 +52,7 @@
         <p><strong>Temperatura: </strong><span id="temperatura"></span></p>
         <p><strong>Salinas: </strong><span id="salinas"></span></p>
         <p><strong>Hora y fecha: </strong><span id="hora"></span></p>
-        <p><strong>Nombre del chips: </strong><span id="nombreChip"></span></p>    
+        <p><strong>Nombre del chip: </strong><span id="nombreChip"></span></p>    
     </div>
 </body>
 </html>

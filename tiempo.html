@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+
+<style type="text/css">
+    * {
+        -moz-box-sizing:border-box;
+        -webkit-box-sizing:border-box;
+        -o-box-sizing:border-box;
+        -ms-box-sizing:border-box;
+        box-sizing:border-box;
+        margin: 5%;
+        text-align: center;
+    }
+    .form {
+        border: 1px solid blue;
+    }
+    input {
+        display: block;
+        margin: 12% auto;
+        padding: 1rem;
+        width: 132px;
+    }
+</style>
+</head>
+<body>
+<div class="content">
+    <p><strong>Problema:</strong> recargar la página cada día a una hora determinada</p>
+
+
+    <div class="form">
+        <input type="text" value="7:30:00" placeholder="hh:mm:ss" id="input">
+        <input type="button" onclick="update()" value="Actualizar hora">
+    </div>
+</div>
+
+<script>
+    ////////////////////////////////////////////////////////////////
+    // Datos entrantes
+
+    let updateTime = '0:0:0';
+
+
+    ////////////////////////////////////////////////////////////////
+    // Script
+
+    let arrUpdateTime = splitUpdateTime();
+
+    function splitUpdateTime()
+    {
+        const arrUpdateTime = updateTime.split(':');
+        for (let index = 0; index < 3; index++) {
+            arrUpdateTime[index] = parseInt(arrUpdateTime[index]);
+        }
+
+        return arrUpdateTime;
+    }
+
+    function checkToReload()
+    {
+        // console.log('checkToReload()'); // HACK: trace
+
+        const date = new Date();
+        if (date.getHours() === arrUpdateTime[0]
+            && date.getMinutes() === arrUpdateTime[1]
+            && date.getSeconds() === arrUpdateTime[2]
+        ) {
+            location.reload();
+        }
+    }
+
+    setInterval('checkToReload()', 1000);
+</script>
+
+<script>
+    function update()
+    {
+        updateTime = document.getElementById('input').value;
+        arrUpdateTime = splitUpdateTime();
+    }
+</script>
+</body>
+</html>
