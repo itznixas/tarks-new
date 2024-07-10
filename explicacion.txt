@@ -1,0 +1,96 @@
+-Se realiza un get par obtener los datos que se encuentra en la base de datos
+$idpiscina = isset($_GET['idpiscina']) ? intval($_GET['idpiscina']) : 0;
+"isset" es una funcion en PHP que esta verifica si la variable esta definida o es nula, Esta función devuelve un valor booleano: true si la variable está definida y no es NULL, y false en caso contrario.
+isset($_GET['idpiscina']) => Aca comprueba si esta definifo o recibe un null
+
+"intval" Aca debe obtener un valor entero de una variable
+intval($_GET['idpiscina']) : 0; => Aca recibe el valor del GET, recibe la id del la piscina indica y muestra los datos que esta tiene y si es falso muestra un 0
+
+api: http://localhost/tecnoparque/consultapiscina.php?idpiscina=15
+//Esta es la api que nos muestralos datos que recibe el php
+
+if ($idpiscina > 0) {
+    $sql = "SELECT p.idpiscina, p.temp, p.salina, p.fecha, c.chip_name
+            FROM `prueba`.`piscina` p
+            JOIN `prueba`.`tblchips` c ON p.idchips = c.idchips
+            WHERE p.idpiscina = $idpiscina
+            ORDER BY p.fecha DESC
+            LIMIT 1;
+            *En pare del query*
+            FROM `prueba`.`piscina` p => en alias de la tabla piscina
+            JOIN `prueba`.`tblchips` c => alias de la tabla chips
+
+            
+            ";
+
+            //Aca si el id es mayor que 0, va traer los datos que pertenezca a la id
+} else {
+    $sql = "SELECT p.idpiscina, p.temp, p.salina, p.fecha, c.chip_name
+            FROM `prueba`.`piscina` p
+            JOIN `prueba`.`tblchips` c ON p.idchips = c.idchips
+            ORDER BY p.fecha DESC
+            LIMIT 1;";
+
+            //la consulta selecciona el registro más reciente de la tabla piscina, sin filtrar por idpiscina.
+            //Si el id no es coorecta igualmente va traer los datos pero sin filtro, va mostrar el ultimo datos que se encuentre en la tabla,
+            esto evita que la consulta falle
+}
+
+
+//El contenido de respuesta que vamos a enviar que es csv
+header('Content-Type: text/csv');
+
+header('Content-Disposition: attachment; filename="data.csv"');
+// Este encabezado indica al navegador que el contenido debe tratarse como un archivo adjunto y
+ proporciona un nombre de archivo ("data.csv") para el archivo descargado. Esto forzará al navegador 
+ a mostrar un diálogo de descarga.
+
+$output = fopen('php://output', 'w');
+ //fopen — Abre un fichero o un URL
+ W => Apertura para sólo escritura; coloca el puntero al fichero al 
+ principio del fichero y trunca el fichero a longitud cero. Si el 
+ fichero no existe se intenta crear.
+
+// fputcsv — Dar formato CSV a una línea y escribirla en un puntero a un fichero
+// fputcsv() da formato CSV a una línea (pasada como el array fields) y la escribe
+ (terminada con una nueva línea) en el manejador dado por handle del fichero especificado.
+ fputcsv($output, array('idpiscina', 'temp', 'salina', 'fecha', 'chip_name'));
+
+//Si result es mayoar a 0, entonces obtenemos los datos, Este es un método de la clase mysqli_result
+ que devuelve el número de filas en el conjunto de resultados.
+//Esta condición comprueba si hay una o más filas devueltas por la consulta SQL.
+ Si el número de filas es mayor que 0, significa que se han encontrado datos.
+ if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        //mysql_fetch_assoc — Recupera una fila de resultados como un array asociativo
+        fputcsv($output, $row);
+    }
+} else {
+    echo "No data found\n";
+}
+
+
+"Javascript"
+
+response.text() también devuelve una Promesa que se resolverá con el cuerpo de la respuesta convertido a texto.
+ Aquí asumimos que consultapiscina.php devuelve un archivo CSV o datos en formato de texto.
+  fetch('consultapiscina.php')
+                    .then(response => response.text())
+                    .then(data => {
+                        //El data es la informacion obtenida
+                        const rows = data.split("\n");
+                        //Aca dividimos el texto en lineas
+                        if (rows.length > 1) { // Verificacion que haya mas lineas
+                            const element = rows[1].split(","); // agarra la segunda lineas de datos y lo devide en , 
+                            //Obtiene los datos nuevos 
+                            const newData = element.join(",");
+                            const newData = element.join(",");: Esto vuelve a unir los componentes de la segunda línea en
+                             una sola cadena, separada por comas. Este paso parece redundante porque element ya es un array 
+                             que fue dividido por comas, pero puede ser útil para formatear o procesar los datos de otra manera
+
+!==: Los valores no son iguales en valor.
+Los valores no son del mismo tipo.
+
+setInterval: Es una función de JavaScript que ejecuta una función o un fragmento de código repetidamente, con un tiempo de retardo fijo entre cada llamada
+Después de la primera llamada, setInterval(fetchData, 5000); configura un temporizador que ejecutará fetchData cada 5 segundos. Esto significa que después de 5 segundos
+ de la primera ejecución, fetchData se llamará de nuevo, y continuará llamándose cada 5 segundos indefinidamente.

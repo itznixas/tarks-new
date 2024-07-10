@@ -21,7 +21,7 @@
                             //Obtiene los datos nuevos 
                             const newData = element.join(",");
 
-                            // Cada 30 segundos se va actualizandos por datos nuevos
+                            // Cada 5 segundos se va actualizandos por datos nuevos
                             if (newData !== lastData) {
                                 
                                 //Obtiene la fecha unix, para tranformalo hora local
@@ -40,7 +40,7 @@
             }         
             fetchData();
 
-            // Obtiene la funcion y actualiza cada 30 segundos
+            // Obtiene la funcion y actualiza cada 5 segundos
             setInterval(fetchData, 5000);
         });
     </script>

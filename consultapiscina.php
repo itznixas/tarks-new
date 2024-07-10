@@ -22,17 +22,16 @@ if ($idpiscina > 0) {
 
 $result = $conexion->query($sql);
 
-// Set header for CSV output
+// El contenido de la respuesta es un csv
 header('Content-Type: text/csv');
 header('Content-Disposition: attachment; filename="data.csv"');
 
-// Open output stream
 $output = fopen('php://output', 'w');
 
-// Output column headings
+// Guardar los datos en un csv
 fputcsv($output, array('idpiscina', 'temp', 'salina', 'fecha', 'chip_name'));
 
-// Output rows
+// Salida de la fila
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         fputcsv($output, $row);
