@@ -4,46 +4,118 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+          #temps {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 300px;
+            height: 10px;
+            background: linear-gradient(to right, #007bff, #00d4ff);
+            border-radius: 5px;
+            outline: none;
+            opacity: 0.9;
+            transition: opacity .2s;
+            margin-bottom: 20px;
+        }
+
+        #temps::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: #007bff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            transition: background .2s;
+        }
+
+        #temps::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            background: #007bff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            transition: background .2s;
+        }
+
+        #temps:focus::-webkit-slider-thumb {
+            background: #0056b3;
+        }
+
+        #temps:focus::-moz-range-thumb {
+            background: #0056b3;
+        }
+
+        #time {
+            font-size: 1.5em;
+            color: #000000;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Obtiene los datos viejos para verificar con los nuevos
-            let lastData = "";
+            var slider = document.getElementById('temps');
+            var output = document.getElementById('time');
+            var time = slider.value * 100; // Inicializar el tiempo inicial basado en slider.value
+           
+    
+            // Actualizar el valor cuando cambie el control deslizante
+            slider.addEventListener('input', function() {
+                output.innerHTML = this.value;
+                // Actualizar el tiempo basado en slider.value
+                time = this.value * 6000;
+                console.log('Nuevo intervalo de tiempo:', time);
+                // Reiniciar el intervalo con el nuevo tiempo
+                clearInterval(intervalId);
+                intervalId = setInterval(fetchData, time);
+            });
+    
+            // Variable para almacenar los datos anteriores
+            var lastData = '';
+            var intervalId;
+            
+            // Función para obtener y actualizar los datos
+            function fetchData() {  
 
-            function fetchData() {
+                
                 fetch('consultapiscina.php')
+                console.log("jdfs j")
+                alert('Los datos se han actualizado.')
                     .then(response => response.text())
                     .then(data => {
                         const rows = data.split("\n");
                         if (rows.length > 1) {
                             const element = rows[1].split(",");
-                            //Obtiene los datos nuevos 
                             const newData = element.join(",");
-
-                            // Cada 5 segundos se va actualizandos por datos nuevos
+    
+                            // Verificar si los datos han cambiado desde la última vez
                             if (newData !== lastData) {
-                                
-                                //Obtiene la fecha unix, para tranformalo hora local
                                 const date = new Date(element[3] * 1000).toLocaleString();
-
+    
                                 document.getElementById('idpiscina').textContent = element[0];
                                 document.getElementById('temperatura').textContent = element[1];
                                 document.getElementById('salinas').textContent = element[2];
                                 document.getElementById('hora').textContent = date;
                                 document.getElementById('nombreChip').textContent = element[4];
                                 lastData = newData;
+                                
                             }
                         }
                     })
                     .catch(error => console.error('Error:', error));
-            }         
+            }
+    
             fetchData();
 
-            // Obtiene la funcion y actualiza cada 5 segundos
-            setInterval(fetchData, 5000);
+            intervalId = setInterval(fetchData, time);
+            
         });
     </script>
+    
     <div class="container">
         <h1>Muestra de piscina</h1>
         <p><strong>Id: </strong><span id="idpiscina"></span></p>
@@ -52,5 +124,31 @@
         <p><strong>Hora y fecha: </strong><span id="hora"></span></p>
         <p><strong>Nombre del chip: </strong><span id="nombreChip"></span></p>    
     </div>
+
+    <label for="temp">Tiempo de recarga de los datos:</label><span id="time"></span><br />
+  <h2 id="time"></h2>
+  <input type="range" id="temps" name="temp" list="markers"  min="10" max="30"  step="1" value="10"/>
+
+  <datalist id="markers">
+    <option value="10"></option>
+    <option value="20"></option>
+    <option value="30"></option>
+   
+  </datalist>
+
+  
+  <script>
+    const slider = document.getElementById('temps');
+    const steps = [ 10, 20, 30];
+
+    slider.addEventListener('input', () => {
+      let closest = steps.reduce((prev, curr) => {
+        return (Math.abs(curr - slider.value) < Math.abs(prev - slider.value) ? curr : prev);
+      });
+      slider.value = closest;
+    });
+  </script>
+  
+
 </body>
 </html>

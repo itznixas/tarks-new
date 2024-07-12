@@ -1,85 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Range con saltos específicos</title>
+  <style>
+    #temps {
+      width: 300px;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 8px;
+      background: #f3f3f3;
+      outline: none;
+      opacity: 0.7;
+      transition: opacity .2s;
+    }
 
-<style type="text/css">
-    * {
-        -moz-box-sizing:border-box;
-        -webkit-box-sizing:border-box;
-        -o-box-sizing:border-box;
-        -ms-box-sizing:border-box;
-        box-sizing:border-box;
-        margin: 5%;
-        text-align: center;
+    #temps::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #007bff;
+      cursor: pointer;
+      border-radius: 50%;
     }
-    .form {
-        border: 1px solid blue;
+
+    #temps::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: #007bff;
+      cursor: pointer;
+      border-radius: 50%;
     }
-    input {
-        display: block;
-        margin: 12% auto;
-        padding: 1rem;
-        width: 132px;
-    }
-</style>
+  </style>
 </head>
 <body>
-<div class="content">
-    <p><strong>Problema:</strong> recargar la página cada día a una hora determinada</p>
 
+  <input type="range" id="temps" name="temp" list="markers" min="0" max="100" step="1" value="0" />
+  <datalist id="markers">
+    <option value="0"></option>
+    <option value="25"></option>
+    <option value="50"></option>
+    <option value="75"></option>
+    <option value="100"></option>
+  </datalist>
 
-    <div class="form">
-        <input type="text" value="7:30:00" placeholder="hh:mm:ss" id="input">
-        <input type="button" onclick="update()" value="Actualizar hora">
-    </div>
-</div>
+  <script>
+    const slider = document.getElementById('temps');
+    const steps = [0, 25, 50, 75, 100];
 
-<script>
-    ////////////////////////////////////////////////////////////////
-    // Datos entrantes
+    slider.addEventListener('input', () => {
+      let closest = steps.reduce((prev, curr) => {
+        return (Math.abs(curr - slider.value) < Math.abs(prev - slider.value) ? curr : prev);
+      });
+      slider.value = closest;
+    });
+  </script>
 
-    let updateTime = '0:0:0';
-
-
-    ////////////////////////////////////////////////////////////////
-    // Script
-
-    let arrUpdateTime = splitUpdateTime();
-
-    function splitUpdateTime()
-    {
-        const arrUpdateTime = updateTime.split(':');
-        for (let index = 0; index < 3; index++) {
-            arrUpdateTime[index] = parseInt(arrUpdateTime[index]);
-        }
-
-        return arrUpdateTime;
-    }
-
-    function checkToReload()
-    {
-        // console.log('checkToReload()'); // HACK: trace
-
-        const date = new Date();
-        if (date.getHours() === arrUpdateTime[0]
-            && date.getMinutes() === arrUpdateTime[1]
-            && date.getSeconds() === arrUpdateTime[2]
-        ) {
-            location.reload();
-        }
-    }
-
-    setInterval('checkToReload()', 1000);
-</script>
-
-<script>
-    function update()
-    {
-        updateTime = document.getElementById('input').value;
-        arrUpdateTime = splitUpdateTime();
-    }
-</script>
 </body>
 </html>
