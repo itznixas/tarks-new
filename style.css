@@ -1,5 +1,6 @@
 body {
     font-family: "Consolas", sans-serif;
+    background-color: black;
 }
 
 .card {
@@ -18,6 +19,7 @@ body {
     display: flex;
     justify-content: center;
     text-align: center;
+    color: #ffffff;
 }
 
 .cards {
@@ -33,7 +35,7 @@ body {
     appearance: none;
     width: 300px;
     height: 10px;
-    background: linear-gradient(to right, #007bff, #00d4ff);
+    background: linear-gradient(to right, #e6e6e6, #bebebe);
     border-radius: 5px;
     outline: none;
     opacity: 0.9;
@@ -48,7 +50,7 @@ body {
     appearance: none;
     width: 25px;
     height: 25px;
-    background: #007bff;
+    background: #9b9c9e;
     border-radius: 50%;
     cursor: pointer;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
@@ -58,7 +60,7 @@ body {
 #tempTemperatura:focus::-webkit-slider-thumb, 
 #tempOxigeno:focus::-webkit-slider-thumb, 
 #tempPH:focus::-webkit-slider-thumb {
-    background: #0056b3;
+    background: #515152;
 }
 
 #tempTemperatura::-moz-range-thumb, 
@@ -93,7 +95,8 @@ body {
     margin: 10px;
     width: 300px;
     text-align: center;
-    background-color: #f9f9f9;
+    background-color: #0a0a0a;
+    color: #ffffff;
 }
 
 .card .material-symbols-outlined {
@@ -109,13 +112,10 @@ body {
 
 .slider-labels span {
     font-size: 24px;
-    color: #000000;
+    color: #ffffff;
 }
 
 
-@media (max-width: 480px) {
-    
-}
 
 
 /*portátiles*/ 
