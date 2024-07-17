@@ -30,7 +30,7 @@ function temperatura (){
                 if (response.length > 0 && !response[0].error) {
                     //Formateo de la fecha y hora de unix
                     const newData = response;
-                    //Comparacion de datos nuevos y viejos 
+                    //Comparacion de datos nuevos y viejos, para realizar el intercambios de datos
                     if (newData !== lastData) {
                         const date = new Date(response[0].tmpUnixRegTemp * 1000);
                         const options = {
@@ -45,6 +45,7 @@ function temperatura (){
                         document.getElementById('temperatura').innerText = response[0].valTemp;
                         document.getElementById('hora-temp').innerText = fechaFormateada;
                         document.getElementById('sensor-temp').innerText = response[0].marcaSensor;
+                        //Se guarda los datos nuevos, para realizar el proceso de comparacion de datos
                         lastData = newData;
                         console.log("Datos actaulizados");
                     } else {
