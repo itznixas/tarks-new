@@ -4,32 +4,33 @@ function temperatura (){
     var slider = document.getElementById('tempTemperatura');
     var intervalId = null;
 
-    function updateRefreshTime() {
-        var time = slider.value * 2000; // Multiplica por 1000 para obtener milisegundos
+    function actualizarTiempoTemperatura() {
+        var time = slider.value * 2000; // Multiplica por 2000 para obtener milisegundos
         console.log(time);
         clearInterval(intervalId);
-        intervalId = setInterval(fecthData, time); // Establecemos un nuevo intervalo
+        intervalId = setInterval(datosTemperatura, time); // Establecemos un nuevo intervalo
     }
 
-    function loadInitialData() {
-        fecthData();
+    function cargarDatosTemperatura() {
+        datosTemperatura();
     }
 
-    loadInitialData();
+    cargarDatosTemperatura();
 
     slider.addEventListener('input', function () {
-        updateRefreshTime();
+        actualizarTiempoTemperatura();
     });
 
     var lastData = "";
 
-    function fecthData() {
+    function datosTemperatura() {
         fetch('enviardatosTemp.php?idSensT=1')
             .then(res => res.json())
             .then(response => {
                 if (response.length > 0 && !response[0].error) {
-                    //Formateo de la hora de unix
+                    //Formateo de la fecha y hora de unix
                     const newData = response;
+                    //Comparacion de datos nuevos y viejos 
                     if (newData !== lastData) {
                         const date = new Date(response[0].tmpUnixRegTemp * 1000);
                         const options = {
@@ -53,7 +54,7 @@ function temperatura (){
             })
             .catch(error => console.error('Error:', error));
     }
-    updateRefreshTime(); // Llamamos la funcion para la actualizacion de los datos
+    actualizarTiempoTemperatura(); // Llamamos la funcion para la actualizacion de los datos
 });
 }
 
