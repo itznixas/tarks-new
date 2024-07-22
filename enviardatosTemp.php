@@ -5,7 +5,29 @@ require 'conexion.php';
 // Verifica si se reciben parámetros GET
 $idSens = $_GET["idSensT"] ?? 1; 
 
-$sql = "SELECT nomPiscina, marcaSensor, tmpUnixRegTemp, valTemp FROM (tblsensores INNER JOIN tblpiscinas ON ubicSensor = idPiscina) INNER JOIN tblregtemp ON idSensor = $idSens ORDER BY tmpUnixRegTemp DESC LIMIT 1";
+$sql = "SELECT 
+    p.nomPiscina, 
+    s.marcaSensor, 
+    r.tmpUnixRegTemp, 
+    r.valTemp
+FROM 
+    tblregtemp r
+INNER JOIN 
+    tblsensores s ON r.idSensorTemp = s.idSensor
+INNER JOIN 
+    tblpiscinas p ON s.ubicSensor = p.idPiscina
+WHERE 
+    r.tmpUnixRegTemp = (
+        SELECT 
+            MAX(tmpUnixRegTemp) 
+        FROM 
+            tblregtemp
+        WHERE 
+            idSensorTemp = s.idSensor
+    )
+ORDER BY 
+    r.tmpUnixRegTemp   DESC 
+LIMIT 1";
 
 $result = $conn->query($sql);
 
